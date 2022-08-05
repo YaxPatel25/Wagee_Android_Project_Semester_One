@@ -3,6 +3,7 @@ package com.example.wagee_android_project_semester_one;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,7 @@ public class EmployeeTimeTable extends AppCompatActivity {
     Button changeShift,doubt;
     TextView wage,employeePosition,status;
     SharedPreferences sharedPreferences;
-    public String mainEmployeeName,givenWage,pos,statusString;
+    public String mainEmployeeName,givenWage,pos,statusString,darkMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,13 @@ public class EmployeeTimeTable extends AppCompatActivity {
         status = findViewById(R.id.paidStatus);
 
         sharedPreferences = getSharedPreferences("PAYMENT",MODE_PRIVATE);
+        darkMode = sharedPreferences.getString("DARKMODE",null );
+
+        if (darkMode == "true") {
+            findViewById(R.id.rootView).setBackgroundColor(Color.BLACK);
+        }else {
+            findViewById(R.id.rootView).setBackgroundColor(Color.LTGRAY);
+        }
 
         mainEmployeeName = sharedPreferences.getString("MainEmployeeName",null);
 
@@ -35,7 +43,7 @@ public class EmployeeTimeTable extends AppCompatActivity {
         if(mainEmployeeName.equals("a")){
             givenWage = sharedPreferences.getString("Amount",null);
             pos = sharedPreferences.getString("Position",null);
-            statusString = sharedPreferences.getString("EmployeeStatus",null);
+            statusString = sharedPreferences.getString("Employee    Status",null);
         }else if(mainEmployeeName.equals("b")){
             givenWage = sharedPreferences.getString("Amount1",null);
             pos = sharedPreferences.getString("Position1",null);

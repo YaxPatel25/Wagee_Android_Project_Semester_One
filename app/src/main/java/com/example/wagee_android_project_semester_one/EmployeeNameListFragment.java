@@ -1,6 +1,9 @@
 package com.example.wagee_android_project_semester_one;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.content.SharedPreferences;
 
 import com.example.wagee_android_project_semester_one.placeholder.Employee_Name;
 
@@ -23,6 +28,8 @@ public class EmployeeNameListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+
+    SharedPreferences sharedPreferences;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,6 +55,8 @@ public class EmployeeNameListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        sharedPreferences = getContext().getSharedPreferences("PAYMENT",MODE_PRIVATE);
     }
 
     @Override
@@ -55,6 +64,13 @@ public class EmployeeNameListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        String darkMode = sharedPreferences.getString("DARKMODE",null );
+
+        if(darkMode == "true") {
+            container.setBackgroundColor(Color.BLACK);
+        }else if(darkMode == "false"){
+            container.setBackgroundColor(Color.WHITE);
+        }
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

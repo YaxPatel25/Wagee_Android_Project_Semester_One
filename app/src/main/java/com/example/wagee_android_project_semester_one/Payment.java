@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,7 @@ public class Payment extends AppCompatActivity {
     EditText amount;
     TextView paymentStatus,employeeName,employeePosition;
     SharedPreferences sharedPreferences;
-    String status,paidAmount,sEmployeePosition;
+    String status,paidAmount,sEmployeePosition,darkMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,14 @@ public class Payment extends AppCompatActivity {
         employeePosition = findViewById(R.id.employeePosition);
 
         sharedPreferences = getSharedPreferences("PAYMENT",MODE_PRIVATE);
+        darkMode = sharedPreferences.getString("DARKMODE",null );
+
+        if (darkMode == "true") {
+            findViewById(R.id.rootView).setBackgroundColor(Color.BLACK);
+        }else {
+            findViewById(R.id.rootView).setBackgroundColor(Color.LTGRAY);
+        }
+
 
         //Get Payment Data According to Employee Name in Employer Screen
         if (extra.equals("Employee   A")){
