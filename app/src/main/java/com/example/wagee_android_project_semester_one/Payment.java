@@ -1,10 +1,16 @@
 package com.example.wagee_android_project_semester_one;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +25,10 @@ public class Payment extends AppCompatActivity {
     TextView paymentStatus,employeeName,employeePosition;
     SharedPreferences sharedPreferences;
     String status,paidAmount,sEmployeePosition,darkMode;
+    private static final String CHANNEL_ID = "MY_CHANNEL";
+    private int notificationId = 1;
+    public static final String USER_ID = "user_id";
+    public static final String MESSAGE = "message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +105,37 @@ public class Payment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String a1 = amount.getText().toString();
+
+                //  notification part starts from here
+                createNotificationChannel();
+
+                Intent intent = new Intent(Payment.this, Payment.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(Payment.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                Intent burdenIntent = new Intent(Payment.this, wageeNotification.class);
+                burdenIntent.setAction(Intent.ACTION_GET_CONTENT);
+                burdenIntent.putExtra(Intent.EXTRA_DURATION_MILLIS, System.currentTimeMillis());
+                burdenIntent.putExtra(USER_ID,"User123");
+                burdenIntent.putExtra(MESSAGE,"Hi there!");
+
+                PendingIntent burdenPendingIntent = PendingIntent.getBroadcast(Payment.this, 1, burdenIntent, PendingIntent.FLAG_ONE_SHOT);
+
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(Payment.this,CHANNEL_ID)
+                        .setSmallIcon(R.drawable.noti_payment)
+                        .setContentTitle("Payment")
+                        .setContentText("$ "+ amount.getText() +" has been paid to "+ extra)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .addAction(R.drawable.noti_payment, getString(R.string.notification_action), burdenPendingIntent);
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Payment.this);
+                notificationManagerCompat.notify(notificationId++,builder.build());
+
+
+                // noti ends above there ..
                 if(a1.equals("")){
                     Toast.makeText(getBaseContext(), "Amount Is Empty", Toast.LENGTH_LONG).show();
                 }else {
@@ -160,5 +201,24 @@ public class Payment extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("EmployeeScreen",extra);
         editor.apply();
+    }
+
+
+
+    // notification channel method...
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
