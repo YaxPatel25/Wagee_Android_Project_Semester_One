@@ -38,7 +38,6 @@ public class Payment extends AppCompatActivity {
         String extra = getIntent().getStringExtra("Amount");
         payment = findViewById(R.id.payment);
         editPosition = findViewById(R.id.changeShift);
-        home = findViewById(R.id.home1);
         amount = findViewById(R.id.amount);
         paymentStatus = findViewById(R.id.status);
         employeeName = findViewById(R.id.employeeName);
@@ -185,15 +184,6 @@ public class Payment extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(Payment.this,EditPosition.class));
 //                finish();
-            }
-        });
-
-        //Redirect To Home Screen
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Payment.this,MainActivity.class));
-                finish();
             }
         });
 
